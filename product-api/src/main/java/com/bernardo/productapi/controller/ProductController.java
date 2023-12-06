@@ -1,37 +1,33 @@
 package com.bernardo.productapi.controller;
 
+import com.bernardo.productapi.dto.CategoryDTO;
 import com.bernardo.productapi.dto.ProductDTO;
 import com.bernardo.productapi.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(name = "/product")
+@RequestMapping("api/v1/product")
 public class ProductController {
 
     @Autowired
     ProductService productService;
 
-    @GetMapping
+    @GetMapping()
     public List<ProductDTO> getProducts(){
-        List<ProductDTO> productDTO = productService.getAll();
 
-        return productDTO;
+        List<ProductDTO> dtoList = productService.getAll();
+
+        return ResponseEntity.ok().body(dtoList).getBody();
     }
-
     @GetMapping("/category/{categoryId}")
-    public List<ProductDTO> getProductByCategory(@PathVariable Long categoryId) {
-        List<ProductDTO> productDTO = productService.getproductByCategoryId(categoryId);
+    public List<CategoryDTO> getProductByCategory(@PathVariable Long categoryId) {
 
-        return productDTO;
-    }
-
-    @GetMapping("/{productIdentifier}")
-    public ProductDTO findById(@PathVariable String productIdentifier) {
-        return productService.findByproductIdentifier(productIdentifier);
+        return productService.getproductByCategoryId(categoryId);
     }
 
     @PostMapping

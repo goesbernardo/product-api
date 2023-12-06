@@ -1,7 +1,10 @@
 package com.bernardo.productapi.service;
 
+import com.bernardo.productapi.dto.CategoryDTO;
 import com.bernardo.productapi.dto.ProductDTO;
+import com.bernardo.productapi.model.Category;
 import com.bernardo.productapi.model.Product;
+import com.bernardo.productapi.repository.CategoryRepository;
 import com.bernardo.productapi.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,26 +19,22 @@ public class ProductService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
     public List<ProductDTO> getAll(){
         List<Product> products = productRepository.findAll();
 
         return products.stream().map(ProductDTO::convert).collect(Collectors.toList());
     }
 
-    public List<ProductDTO> getproductByCategoryId(Long categoryId) {
-        List<Product> products = productRepository.getProductByCategory(categoryId);
+    public List<CategoryDTO> getproductByCategoryId(Long categoryId) {
+        Optional<Category> category = categoryRepository.findById(categoryId);
 
-        return products.stream().map(ProductDTO::convert).collect(Collectors.toList());
+        return category.stream().map(CategoryDTO::convert).collect(Collectors.toList());
     }
 
-    public ProductDTO findByproductIdentifier(String productIdentifier) {
-        Product product = productRepository.findByProductIdentifier(productIdentifier);
 
-        if (product != null) {
-            return DTOConverter.convert(product);
-        }
-        return null;
-    }
     public ProductDTO save(ProductDTO productDTO) {
         Product product = productRepository.save(Product.convert(productDTO));
 
